@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultório Olharys - Agendamento Inteligente</title>
+    <link rel="icon" type="image/png" href="IMG.PNG">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        :root {
+            /* Paleta Moderna Digital */
+            --brand-primary: #008C7D;    /* Verde Água Escuro e Profissional */
+            --brand-secondary: #00A896;  /* Verde Água Vibrante */
+            --brand-light: #F0F9F8;      /* Fundo ultra claro */
+            --brand-accent: #02C39A;     /* Destaque digital */
+            
+            --text-dark: #1E293B;        /* Slate 800 - Leitura confortável */
+            --text-muted: #64748B;       /* Slate 500 */
+            --surface-white: #FFFFFF;
+            
+            --error: #EF4444;
+            --success: #10B981;
+            
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0, 140, 125, 0.15);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--brand-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === Layout Split Moderno === */
+        .landing-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Lado Esquerdo: Imagem e Branding */
+        .hero-section {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(0, 140, 125, 0.85) 0%, rgba(0, 168, 150, 0.9) 100%), 
+                        url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=2073&auto=format&fit=crop') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            color: var(--surface-white);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 500px;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Lado Direito: Formulário/Widget */
+        .form-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background-color: var(--brand-light);
+            position: relative;
+        }
+
+        .widget-container {
+            width: 100%;
+            max-width: 550px;
+            background: var(--surface-white);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Linha de progresso superior */
+        .widget-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+        }
+
+        .step-container {
+            display: none;
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .step-container.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--brand-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Cartões de Serviço */
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+
+        .card {
+            border: 2px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            background: var(--surface-white);
+        }
+
+        .card-icon {
+            background: var(--brand-light);
+            color: var(--brand-primary);
+            padding: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-content h3 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .card-content p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .card:hover {
+            border-color: var(--brand-secondary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card.selected {
+            border-color: var(--brand-primary);
+            background-color: var(--brand-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card.selected .card-icon {
+            background: var(--brand-primary);
+            color: var(--surface-white);
+        }
+
+        .price {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--brand-primary);
+            background: #E2F3F1;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* Inputs e Calendário */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        input[type="date"], input[type="text"], input[type="tel"] {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            background-color: #F8FAFC;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+            background-color: var(--surface-white);
+            box-shadow: 0 0 0 4px rgba(0, 140, 125, 0.1);
+        }
+
+        /* Grid de Horários */
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .time-slot {
+            padding: 0.8rem;
+            background: var(--surface-white);
+            border: 2px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .time-slot:hover:not(.disabled) {
+            border-color: var(--brand-secondary);
+            color: var(--brand-primary);
+        }
+
+        .time-slot.selected {
+            background: var(--brand-primary);
+            color: var(--surface-white);
+            border-color: var(--brand-primary);
+            box-shadow: 0 4px 12px rgba(0, 140, 125, 0.3);
+        }
+
+        .time-slot.disabled {
+            background-color: #F1F5F9;
+            color: #94A3B8;
+            cursor: not-allowed;
+            border-color: transparent;
+            text-decoration: line-through;
+        }
+
+        /* Botões */
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        button {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        button:hover {
+             transform: translateY(-2px);
+        }
+
+        .btn-next {
+            background: var(--brand-primary);
+            color: var(--surface-white);
+            box-shadow: 0 4px 15px rgba(0, 140, 125, 0.25);
+        }
+        
+        .btn-next:hover {
+             background: #007A6D;
+             box-shadow: 0 6px 20px rgba(0, 140, 125, 0.35);
+        }
+
+        .btn-back {
+            background-color: #F1F5F9;
+            color: var(--text-muted);
+            flex: 0.4;
+        }
+        
+        .btn-back:hover {
+             background-color: #E2E8F0;
+             color: var(--text-dark);
+        }
+
+        /* Resumo e Erros */
+        .summary-box {
+            background: var(--brand-light);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 168, 150, 0.2);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(0, 140, 125, 0.3);
+            font-size: 1.1rem;
+        }
+
+        .summary-label { color: var(--text-muted); }
+        .summary-value { font-weight: 600; color: var(--text-dark); }
+
+        .error-msg {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .landing-wrapper {
+                flex-direction: column;
+            }
+            .hero-section {
+                padding: 3rem 2rem;
+                min-height: 40vh;
+            }
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .form-section {
+                padding: 2rem 1rem;
+                margin-top: -30px;
+            }
+            .widget-container {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="landing-wrapper">
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Sua visão com a clareza que você merece.</h1>
+            <p>Agende sua consulta no Consultório Olharys em menos de 2 minutos. Atendimento humanizado e tecnologia de ponta.</p>
+            
+            <ul class="feature-list">
+                <li><span class="material-symbols-outlined">check_circle</span> Profissionais especializados</li>
+                <li><span class="material-symbols-outlined">check_circle</span> Equipamentos de última geração</li>
+                <li><span class="material-symbols-outlined">check_circle</span> Ambiente moderno e confortável</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <div class="widget-container">
+            
+            <div id="step1" class="step-container active">
+                <h2><span class="material-symbols-outlined">stethoscope</span> Especialidade</h2>
+                <p class="step-subtitle">Selecione o tipo de atendimento desejado.</p>
+                
+                <div class="service-grid">
+                    <div class="card" onclick="selectService('Optometrista', 120, this)">
+                        <div class="card-icon"><span class="material-symbols-outlined">visibility</span></div>
+                        <div class="card-content">
+                            <h3>Optometria Avançada</h3>
+                            <p>Exame refrativo completo para prescrição exata de óculos e lentes de contato.</p>
+                            <span class="price">R$ 120,00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="selectService('Oftalmologista', 150, this)">
+                        <div class="card-icon"><span class="material-symbols-outlined">medical_services</span></div>
+                        <div class="card-content">
+                            <h3>Consulta Oftalmológica</h3>
+                            <p>Avaliação médica completa, saúde ocular, diagnósticos e prevenção de doenças.</p>
+                            <span class="price">R$ 150,00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="error-msg" id="error-step1" style="display:none;">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">error</span> Selecione uma opção acima.
+                </div>
+                
+                <div class="btn-group" style="justify-content: flex-end;">
+                    <button class="btn-next" onclick="goToStep(2)">Escolher Data <span class="material-symbols-outlined">arrow_forward</span></button>
+                </div>
+            </div>
+
+            <div id="step2" class="step-container">
+                <h2><span class="material-symbols-outlined">calendar_month</span> Data e Horário</h2>
+                <p class="step-subtitle">Agenda de 2026. Selecione sua preferência.</p>
+                
+                <div class="form-group">
+                    <input type="date" id="dateInput" min="2026-01-01" max="2026-12-31">
+                    <div class="error-msg" id="date-error" style="display:none;"></div>
+                </div>
+
+                <div id="timeContainer" style="display:none; margin-top: 2rem;">
+                    <label>Horários disponíveis:</label>
+                    <div class="time-grid" id="timeGrid"></div>
+                    <div class="error-msg" id="time-error" style="display:none;">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">error</span> Selecione um horário.
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-back" onclick="goToStep(1)">Voltar</button>
+                    <button class="btn-next" onclick="goToStep(3)">Continuar <span class="material-symbols-outlined">arrow_forward</span></button>
+                </div>
+            </div>
+
+            <div id="step3" class="step-container">
+                <h2><span class="material-symbols-outlined">person</span> Seus Dados</h2>
+                <p class="step-subtitle">Quase lá! Preencha para finalizar o agendamento.</p>
+                
+                <div class="summary-box">
+                    <div class="summary-item">
+                        <span class="summary-label">Serviço</span> <span class="summary-value" id="sum-pro"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Data/Hora</span> <span class="summary-value"><span id="sum-date"></span> às <span id="sum-time"></span></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label" style="color: var(--brand-primary); font-weight: 600;">Total Estimado</span> 
+                        <span class="summary-value" style="color: var(--brand-primary); font-size: 1.2rem;" id="sum-price"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" placeholder="Como prefere ser chamado?">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="city">Cidade</label>
+                        <input type="text" id="city" placeholder="Sua cidade">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="phone">WhatsApp</label>
+                        <input type="tel" id="phone" placeholder="(00) 00000-0000">
+                    </div>
+                </div>
+
+                <div class="error-msg" id="form-error" style="display:none;">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">error</span> Preencha todos os campos.
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn-back" onclick="goToStep(2)">Voltar</button>
+                    <button class="btn-next" onclick="finishBooking()">
+                        Confirmar <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Configurações e Dados ---
+    const WHATSAPP_NUMBER = "5544991837620";
+    const YEAR = 2026;
+    const HOLIDAYS_2026 = [
+        "2026-01-01", "2026-02-17", "2026-04-03", "2026-04-21", "2026-05-01", 
+        "2026-06-04", "2026-09-07", "2026-10-12", "2026-11-02", "2026-11-15", "2026-12-25" 
+    ];
+
+    let bookingData = {
+        service: null, price: null, date: null, time: null, patientName: null, city: null, phone: null
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const dateInput = document.getElementById('dateInput');
+        dateInput.min = `${YEAR}-01-01`;
+        dateInput.max = `${YEAR}-12-31`;
+        dateInput.addEventListener('change', handleDateChange);
+        
+        document.getElementById('phone').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    });
+
+    function goToStep(stepNumber) {
+        if (stepNumber === 2) {
+            if (!bookingData.service) {
+                document.getElementById('error-step1').style.display = 'flex';
+                return;
+            }
+            document.getElementById('error-step1').style.display = 'none';
+        }
+
+        if (stepNumber === 3) {
+            if (!bookingData.date || !bookingData.time) {
+                if(!bookingData.date) {
+                    document.getElementById('date-error').innerHTML = `<span class="material-symbols-outlined" style="font-size: 18px;">error</span> Selecione uma data.`;
+                    document.getElementById('date-error').style.display = 'flex';
+                }
+                if(bookingData.date && !bookingData.time) document.getElementById('time-error').style.display = 'flex';
+                return;
+            }
+            updateSummary();
+        }
+
+        document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+        document.getElementById(`step${stepNumber}`).classList.add('active');
+    }
+
+    function selectService(name, price, element) {
+        bookingData.service = name;
+        bookingData.price = price;
+        document.getElementById('error-step1').style.display = 'none';
+        
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+        element.classList.add('selected');
+        
+        bookingData.time = null;
+        if(document.getElementById('step2').classList.contains('active') && bookingData.date) {
+             renderTimeSlots();
+        }
+    }
+
+    function handleDateChange(e) {
+        const selectedDate = e.target.value;
+        if (!selectedDate) return;
+
+        const dateObj = new Date(selectedDate + 'T00:00:00');
+        const dayOfWeek = dateObj.getDay(); 
+        const errorDiv = document.getElementById('date-error');
+        const timeContainer = document.getElementById('timeContainer');
+
+        bookingData.date = null;
+        bookingData.time = null; 
+        timeContainer.style.display = 'none';
+        errorDiv.style.display = 'none';
+
+        if (dateObj.getFullYear() !== YEAR) {
+            errorDiv.innerHTML = `<span class="material-symbols-outlined" style="font-size: 18px;">error</span> Apenas para o ano de ${YEAR}.`;
+            errorDiv.style.display = 'flex'; return;
+        }
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+            errorDiv.innerHTML = `<span class="material-symbols-outlined" style="font-size: 18px;">error</span> Fechado aos fins de semana.`;
+            errorDiv.style.display = 'flex'; return;
+        }
+        if (HOLIDAYS_2026.includes(selectedDate)) {
+            errorDiv.innerHTML = `<span class="material-symbols-outlined" style="font-size: 18px;">error</span> Feriado. Sem atendimento.`;
+            errorDiv.style.display = 'flex'; return;
+        }
+
+        bookingData.date = selectedDate;
+        timeContainer.style.display = 'block';
+        setTimeout(renderTimeSlots, 100);
+    }
+
+    function renderTimeSlots() {
+        const grid = document.getElementById('timeGrid');
+        grid.innerHTML = '';
+        document.getElementById('time-error').style.display = 'none';
+
+        if (!bookingData.date || !bookingData.service) return;
+        
+        const slots = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+        const storageKey = `${bookingData.date}_${bookingData.service}`;
+        const takenSlots = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+        slots.forEach(time => {
+            const div = document.createElement('div');
+            div.className = 'time-slot';
+            div.innerText = time;
+
+            if (takenSlots.includes(time)) {
+                div.classList.add('disabled');
+            } else {
+                div.onclick = () => selectTime(time, div);
+                if (bookingData.time === time) div.classList.add('selected');
+            }
+            grid.appendChild(div);
+        });
+    }
+
+    function selectTime(time, element) {
+        if (element.classList.contains('disabled')) return;
+        bookingData.time = time;
+        document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('time-error').style.display = 'none';
+    }
+
+    function updateSummary() {
+        const [ano, mes, dia] = bookingData.date.split('-');
+        document.getElementById('sum-pro').innerText = bookingData.service;
+        document.getElementById('sum-date').innerText = `${dia}/${mes}/${ano}`;
+        document.getElementById('sum-time').innerText = bookingData.time + 'h';
+        document.getElementById('sum-price').innerText = `R$ ${bookingData.price},00`;
+        document.getElementById('form-error').style.display = 'none';
+    }
+
+    function finishBooking() {
+        const name = document.getElementById('name').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const errorDiv = document.getElementById('form-error');
+
+        if (!name || !city || !phone || phone.length < 14) {
+            errorDiv.style.display = 'flex'; return;
+        }
+
+        const [ano, mes, dia] = bookingData.date.split('-');
+        
+        const storageKey = `${bookingData.date}_${bookingData.service}`;
+        const currentTaken = JSON.parse(localStorage.getItem(storageKey)) || [];
+        currentTaken.push(bookingData.time);
+        localStorage.setItem(storageKey, JSON.stringify(currentTaken));
+
+        const msg = `Olá! Gostaria de confirmar o seguinte agendamento no *Consultório Olharys*:
+        
+✅ *DADOS DO AGENDAMENTO*
+👨‍⚕️ *Profissional:* ${bookingData.service}
+📅 *Data:* ${dia}/${mes}/${ano}
+⏰ *Horário:* ${bookingData.time}
+💰 *Valor Estimado:* R$ ${bookingData.price},00
+
+👤 *DADOS DO PACIENTE*
+*Nome:* ${name}
+*Cidade:* ${city}
+*Telefone:* ${phone}`;
+
+        const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+        window.open(whatsappLink, '_blank');
+        
+        document.getElementById('step3').innerHTML = `
+            <div style="text-align:center; padding: 2rem 0;">
+                <span class="material-symbols-outlined" style="font-size: 60px; color: var(--success); margin-bottom: 1rem;">check_circle</span>
+                <h2 style="justify-content: center; color: var(--text-dark);">Agendamento Iniciado!</h2>
+                <p style="color: var(--text-muted); margin-top: 1rem;">Finalize o envio da mensagem no seu WhatsApp.</p>
+                <button class="btn-next" style="margin-top: 2rem; width: 100%;" onclick="location.reload()">Novo Agendamento</button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
